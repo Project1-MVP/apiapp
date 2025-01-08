@@ -1,4 +1,4 @@
-# django_firstcut
+# apiApp
  
 # local setup
 ## Ensure to point the DB to local DB
