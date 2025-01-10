@@ -1,17 +1,20 @@
 from datetime import datetime
 from decimal import Decimal
+
+from django.shortcuts import get_object_or_404
 from backend.enums import DispatchType, OrderStatus, OrderType, PaymentStatus
 from inventory_svs.models import Product, ProductBatch, ProductBatchCount, ProductBatchLedger
-from .models import OrderBatch
+from .models import OrderBatch, OrderItem
 from .validators import OrderValidator
-
+from backend.utils.api_response import api_response
+from django.db.models import Sum
 
 class OrderService:
     @staticmethod
     def process_order_item(request_data, orderBatch_id=None):
         product_batch = ProductBatch.objects.get(productBatch_id=request_data['productBatch_id'])
         product = Product.objects.get(product_id=product_batch.product_id)
-        price_per_unit, total_price = OrderValidator.calculate_price_details(product_batch, request_data['order_quantity'])
+        price_per_unit, total_price = OrderService.calculate_price_details(product_batch, request_data['order_quantity'])
         
         return {
             'product_batch': product_batch,
@@ -51,7 +54,7 @@ class OrderService:
             ProductBatchLedger.objects.create(
                 productBatch_id=item.productBatch_id,
                 order_id=item.order_id,
-                order_type=OrderType.PROVISIONING.name,
+                order_type=OrderType.SALE.name,
                 quantity=item.order_quantity,
             )
             
@@ -100,17 +103,28 @@ class OrderService:
         }
     
     @staticmethod
-    def update_order_batch_total(orderBatch_id, total_price, subtract_existing=None):
-        order_batch = OrderBatch.objects.get(orderBatch_id=orderBatch_id)
-        if subtract_existing:
-            order_batch.total_order_value = order_batch.total_order_value - subtract_existing + total_price
-        else:
-            order_batch.total_order_value += total_price
-        order_batch.save()
-        return order_batch
+    def update_order_batch_total(orderBatch_id):
+       # Use get_object_or_404 to handle object not found case gracefully
+        orderBatch_Obj = get_object_or_404(OrderBatch, orderBatch_id=orderBatch_id)
+        
+        # Aggregate the sum of total_price for the given orderBatch_id.
+        total_price_sum = OrderItem.objects.filter(orderBatch_id=orderBatch_id).aggregate(Sum('total_price'))['total_price__sum'] or 0
+        
+        # Update the total_order_value
+        orderBatch_Obj.total_order_value = total_price_sum
+        orderBatch_Obj.save()
+        
+        return orderBatch_Obj.total_order_value
+
     
     @staticmethod
     def calculate_price_details(product_batch, order_quantity):
         price_per_unit = Decimal(str(product_batch.productBatch_mrp * (1 - product_batch.productBatch_discount / 100))).quantize(Decimal('0.01'))
         total_price = Decimal(str(order_quantity * price_per_unit)).quantize(Decimal('0.01'))
         return price_per_unit, total_price
+    
+    @staticmethod
+    def get_product_quantity_type(productBatch_id):
+        product_batch = ProductBatch.objects.get(productBatch_id=productBatch_id)
+        product = Product.objects.get(product_id=product_batch.product_id)
+        return product.product_measurement_unit

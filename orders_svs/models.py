@@ -28,7 +28,7 @@ class OrderItem(models.Model):
     order_quantity = models.DecimalField(max_digits=10, decimal_places=2)
     quantity_type = models.CharField(max_length=20, choices=UnitType.choices())
     planned_delivery = models.DateField()
-    actual_delivery = models.DateTimeField(null=True, blank=True)
+    actual_delivery = models.DateTimeField(default=timezone.now() + timezone.timedelta(days=365))
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
     total_price = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
 

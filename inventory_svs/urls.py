@@ -19,8 +19,14 @@ urlpatterns = [
 
     # Product Batch URLs
     path('product-batch/create/', views.create_product_batch, name='create_product_batch'),
+    path('product-batch/', views.get_all_product_batch, name='get-all-product-batch'),
+    path('product-batch/<str:pk>/', views.product_batch_detail, name='product-batch-detail'),
+
+    #product batch count
     path('product-batch/<uuid:productBatch_id>/add-quantity/', views.add_product_batch_quantity, name='add_product_batch_quantity'),
-    
-    # Product Batch URLs
+    path('product-batch-count/', views.get_all_product_batch_count, name='product-batch-count-list'),
+    path('product-batch-count/<uuid:pk>/', views.product_batch_count_detail, name='product-batch-count-specific'),
+
+    # Product ledger URLs
     path('batch-ledger/<uuid:productBatch_id>/', views.get_batch_ledger, name='get_batch_ledger'),
 ]

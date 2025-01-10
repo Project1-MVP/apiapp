@@ -24,7 +24,7 @@ class ProductBatchSerializer(serializers.ModelSerializer):
 class ProductBatchCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductBatchCount
-        fields = ['productBatch_id', 'available_quantity']
+        fields = '__all__'
 
 class ProductBatchLedgerSerializer(serializers.ModelSerializer):
     batch_count = ProductBatchCountSerializer(read_only=True)

@@ -1,6 +1,6 @@
 from functools import wraps
 from django.db import transaction
-from . import api_response
+from .api_response import api_response
 from rest_framework import status
 
 def atomic_transaction():
