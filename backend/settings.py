@@ -83,9 +83,20 @@ CORS_ALLOW_METHODS = [
 ]
 
 CORS_ALLOW_HEADERS = [
-    "content-type",
-    "authorization",  # If you're using JWT or any custom auth headers
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
+
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+
+
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
