@@ -62,7 +62,11 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    r"^http://49\.43\.229\.198:\d+$",  # Add other URLs if needed
+    "http://49.43.229.198:3000",
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://49\.43\.229\.198:\d+$",  # Matches any port for HTTP (http://49.43.229.198:<port>)
+    r"^https://49\.43\.229\.198:\d+$",  # Matches any port for HTTPS (https://49.43.229.198:<port>)
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
