@@ -1,9 +1,10 @@
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.urls import path
 from . import views
 
 urlpatterns = [
     # Manufacturer URLs
-    path('manufacturers/', views.get_all_manufacturers, name='get-all-manufacturers'),
+    path('manufacturers/', ensure_csrf_cookie(views.get_all_manufacturers), name='get-all-manufacturers'),
     path('manufacturers/create/', views.create_manufacturer, name='create-manufacturer'),
     path('manufacturers/<str:pk>/', views.manufacturer_detail, name='manufacturer-detail'),
     
