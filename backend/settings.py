@@ -66,12 +66,14 @@ CSRF_COOKIE_SECURE = False
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
-    "http://49.43.229.198:3000"
+    "http://49.43.229.198:3000",
+    "http://192.168.29.72:3000"
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://49.43.229.198:3000",
+    "http://192.168.29.72:3000"
 ]
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r"^http://49\.43\.229\.198:\d+$",  # Matches any port for HTTP (http://49.43.229.198:<port>)
