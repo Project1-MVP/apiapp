@@ -64,6 +64,11 @@ CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_HTTPONLY = False  
 CSRF_COOKIE_SECURE = False
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://49.43.229.198:3000"
+]
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://49.43.229.198:3000",
