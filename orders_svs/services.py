@@ -14,13 +14,14 @@ class OrderService:
     def process_order_item(request_data, orderBatch_id=None):
         product_batch = ProductBatch.objects.get(productBatch_id=request_data['productBatch_id'])
         product = Product.objects.get(product_id=product_batch.product_id)
-        price_per_unit, total_price = OrderService.calculate_price_details(product_batch, request_data['order_quantity'])
+        price_per_unit, total_price = OrderService.calculate_price_details(product_batch, request_data['order_quantity'], product_batch.productBatch_discount)
         
         return {
             'product_batch': product_batch,
             'product': product,
             'price_per_unit': price_per_unit,
-            'total_price': total_price
+            'total_price': total_price,
+            'discount': product_batch.productBatch_discount
         }
 
     @staticmethod
@@ -118,9 +119,11 @@ class OrderService:
 
     
     @staticmethod
-    def calculate_price_details(product_batch, order_quantity):
-        price_per_unit = Decimal(str(product_batch.productBatch_mrp * (1 - product_batch.productBatch_discount / 100))).quantize(Decimal('0.01'))
-        total_price = Decimal(str(order_quantity * price_per_unit)).quantize(Decimal('0.01'))
+    def calculate_price_details(product_batch, quantity, discount):
+        base_price = product_batch.productBatch_mrp
+        discounted_price = base_price * (1 - (discount / 100))  # Apply percentage discount
+        price_per_unit = discounted_price
+        total_price = price_per_unit * quantity
         return price_per_unit, total_price
     
     @staticmethod
