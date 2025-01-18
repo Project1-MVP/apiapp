@@ -21,6 +21,12 @@ from django.conf.urls.static import static
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({'detail': 'CSRF cookie set'})
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -43,7 +49,8 @@ urlpatterns = [
    #path('orgs_svs/', include('orgs_svs.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-
+    #Get CSRF Token
+    path('get-csrf-token/', get_csrf_token, name='get-csrf-token'),
 ]
 
 if settings.DEBUG:

@@ -1,11 +1,7 @@
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.urls import path
 from . import views
-from django.http import JsonResponse
 
-@ensure_csrf_cookie
-def get_csrf_token(request):
-    return JsonResponse({'detail': 'CSRF cookie set'})
 
 urlpatterns = [
     # Manufacturer URLs
@@ -35,9 +31,5 @@ urlpatterns = [
 
     # Product ledger URLs
     path('batch-ledger/<uuid:productBatch_id>/', ensure_csrf_cookie(views.get_batch_ledger), name='get_batch_ledger'),
-    
-    
-    #Get CSRF Token
-    path('get-csrf-token/', get_csrf_token, name='get-csrf-token'),
 
 ]
