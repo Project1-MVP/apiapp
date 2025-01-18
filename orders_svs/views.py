@@ -37,28 +37,41 @@ def create_provision_order_batch(request):
 )
 @api_view(['POST'])
 @atomic_transaction()
+@api_view(['POST'])
+@atomic_transaction()
 def add_provision_order_item(request):
     data = request.data
     data['order_quantity'] = Decimal(str(data['order_quantity']))
     order_batch = OrderBatch.objects.get(orderBatch_id=request.data['orderBatch_id'])
     OrderValidator.validate_provision_order(order_batch)
-    OrderValidator.validate_duplicate_order_item(data['orderBatch_id'],data['productBatch_id'])
-    OrderValidator.validate_product_availability(
-            data['productBatch_id'],
-            data['order_quantity']
+    
+    existing_item = OrderValidator.validate_duplicate_order_item(data['orderBatch_id'], data['productBatch_id'])
+    if existing_item:
+        # Update existing item quantity and recalculate prices
+        data['order_quantity'] += existing_item.order_quantity
+        OrderValidator.validate_product_availability(data['productBatch_id'], data['order_quantity'])
+        order_details = OrderService.process_order_item(data)
+        order_item_data = OrderService.prepare_order_item_data(
+            data,
+            price_per_unit=order_details['price_per_unit'],
+            total_price=order_details['total_price'],
+            is_update=True
         )
-    order_details = OrderService.process_order_item(data)
-    order_item_data = OrderService.prepare_order_item_data(
+        serializer = OrderItemSerializer(existing_item, data=order_item_data, partial=True)
+    else:
+        # Create new order item
+        OrderValidator.validate_product_availability(data['productBatch_id'], data['order_quantity'])
+        order_details = OrderService.process_order_item(data)
+        order_item_data = OrderService.prepare_order_item_data(
             data,
             orderBatch_id=data['orderBatch_id'],
             product=order_details['product'],
-            mrp=order_details['mrp'],
-            discount=order_details['discounte'],
-            discounted_price=order_details['price_per_unit'],
+            price_per_unit=order_details['price_per_unit'],
             total_price=order_details['total_price'],
             quantity_type=OrderService.get_product_quantity_type(data['productBatch_id'])
         )
-    serializer = OrderItemSerializer(data=order_item_data)
+        serializer = OrderItemSerializer(data=order_item_data)
+    
     serializer.is_valid(raise_exception=True)
     order_item = serializer.save()
     OrderService.update_order_batch_total(data['orderBatch_id'])
