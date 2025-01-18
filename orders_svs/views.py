@@ -52,7 +52,9 @@ def add_provision_order_item(request):
             data,
             orderBatch_id=data['orderBatch_id'],
             product=order_details['product'],
-            price_per_unit=order_details['price_per_unit'],
+            mrp=order_details['mrp'],
+            discount=order_details['discounte'],
+            discounted_price=order_details['price_per_unit'],
             total_price=order_details['total_price'],
             quantity_type=OrderService.get_product_quantity_type(data['productBatch_id'])
         )

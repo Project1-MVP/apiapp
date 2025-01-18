@@ -19,9 +19,11 @@ class OrderService:
         return {
             'product_batch': product_batch,
             'product': product,
-            'price_per_unit': price_per_unit,
+            'mrp': product_batch.productBatch_mrp,
+            'discounte': product_batch.productBatch_discount,
+            'discounted_price': price_per_unit,
             'total_price': total_price,
-            'discount': product_batch.productBatch_discount
+            'version': 'v2'
         }
 
     @staticmethod
@@ -97,7 +99,9 @@ class OrderService:
             'productBatch_id': request_data['productBatch_id'],
             'order_quantity': request_data['order_quantity'],
             'quantity_type': kwargs.get('product').product_measurement_unit,
-            'price_per_unit': kwargs.get('price_per_unit'),
+            'mrp_per_unit': kwargs.get('mrp'),
+            'discount': kwargs.get('discounted_price_per_unit'),
+            'discounted_price_per_unit': kwargs.get('price_per_unit'),
             'total_price': kwargs.get('total_price'),
             'order_status': 'PENDING',
             'planned_delivery': datetime.today().date()
