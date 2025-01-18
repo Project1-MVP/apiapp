@@ -8,7 +8,7 @@ from backend.utils.base_crud import CRUDMixin
 from backend.utils.decorations import atomic_transaction
 from backend.utils.api_response import api_response
 from backend.enums import OrderType
-from django.db.models import F
+from django.db.models import F, OuterRef, Subquery
 
 class ManufacturerViews(CRUDMixin):
     model = Manufacturer
@@ -214,7 +214,30 @@ def add_product_batch_quantity(request, productBatch_id):
 )
 @api_view(['GET'])
 def get_all_product_batch_count(request):
-    return ProductBatchCountViews().list(request)
+        product_batches = ProductBatch.objects.filter(productBatch_id=OuterRef('productBatch_id'))
+        products = Product.objects.filter(product_id=OuterRef('product_id'))
+        
+        queryset = (
+            ProductBatchCount.objects
+            .annotate(
+                product_id=Subquery(product_batches.values('product_id')[:1]),
+                product_name=Subquery(products.values('product_name')[:1]),
+                expiry_date=Subquery(product_batches.values('productBatch_DateOfExpiry')[:1]),
+                manufacture_date=Subquery(product_batches.values('productBatch_DateOfManufacture')[:1]),
+                mrp=Subquery(product_batches.values('productBatch_mrp')[:1]),
+                discount=Subquery(product_batches.values('productBatch_discount')[:1])
+            )
+            .values(
+                'productBatch_id',
+                'product_name',
+                'available_quantity',
+                'expiry_date',
+                'manufacture_date',
+                'mrp',
+                'discount'
+            )
+        )
+        return api_response(list(queryset))
 
 @swagger_auto_schema(
     methods=['get', 'put', 'delete'],
