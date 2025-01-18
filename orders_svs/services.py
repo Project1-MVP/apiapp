@@ -121,9 +121,9 @@ class OrderService:
     @staticmethod
     def calculate_price_details(product_batch, quantity, discount):
         base_price = product_batch.productBatch_mrp
-        discounted_price = base_price * (1 - (discount / 100))  # Apply percentage discount
-        price_per_unit = discounted_price
-        total_price = price_per_unit * quantity
+        discounted_price = base_price * (1 - (discount / 100))
+        price_per_unit = round(discounted_price, 2)
+        total_price = round(price_per_unit * quantity, 2)
         return price_per_unit, total_price
     
     @staticmethod
