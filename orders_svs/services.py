@@ -86,8 +86,14 @@ class OrderService:
     def prepare_order_item_data(request_data, **kwargs):
         if kwargs.get('is_update'):
             return {
+                'org_id': request_data['org_id'],
+                'orderBatch_id': kwargs.get('orderBatch_id'),
+                'productBatch_id': request_data['productBatch_id'],
                 'order_quantity': request_data['order_quantity'],
-                'price_per_unit': kwargs.get('price_per_unit'),
+                'quantity_type': kwargs.get('product').product_measurement_unit,
+                'mrp_per_unit': kwargs.get('mrp'),
+                'discount': kwargs.get('discounted_price_per_unit'),
+                'discounted_price_per_unit': kwargs.get('price_per_unit'),
                 'total_price': kwargs.get('total_price'),
                 'order_status': 'PENDING',
                 'planned_delivery': datetime.today().date()
