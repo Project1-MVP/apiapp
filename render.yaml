@@ -1,8 +1,8 @@
 databases:
-  - name: backend
+  - name: mvp
     plan: free
-    databaseName: backend_28y2
-    user: backend_28y2_user
+    databaseName: stockitdb_t8cj
+    user: goverdhan
 
 services:
   - type: web

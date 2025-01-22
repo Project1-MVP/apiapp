@@ -9,8 +9,14 @@ dj-database-url==2.3.0
 Django==4.2.9
 django-admin-datta==1.0.15
 django-api-generator==1.0.17
+django-cors-headers==4.6.0
 django-debug-toolbar==4.4.6
 django-dynamic-datatb==1.0.25
+django-formtools==2.5.1
+django-otp==1.5.4
+django-phonenumber-field==8.0.0
+django-tenants==3.7.0
+django-two-factor-auth==1.17.0
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
 drf-yasg==1.21.8
@@ -32,11 +38,14 @@ psycopg2==2.9.10
 psycopg2-binary==2.9.10
 PyJWT==2.9.0
 pylint==3.3.3
+pyotp==2.9.0
 pyparsing==3.2.1
+pypng==0.20220715.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytz==2024.2
 PyYAML==6.0.2
+qrcode==7.4.2
 sqlparse==0.5.1
 str2bool==1.1
 tomli==2.2.1
@@ -47,4 +56,3 @@ uritemplate==4.1.1
 uvicorn==0.34.0
 whitenoise==6.7.0
 zipp==3.21.0
-django-cors-headers==4.6.0

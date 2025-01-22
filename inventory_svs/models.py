@@ -48,12 +48,12 @@ class ProductBatch(models.Model):
     productBatch_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     org_id = models.UUIDField(db_index=True)
     product_id = models.UUIDField(db_index=True)
-    productBatch_created_date = models.DateTimeField(default=(datetime.today()))
+    productBatch_created_date = models.DateTimeField(default=(datetime.now))
     productBatch_cost_price = models.DecimalField(max_digits=10, decimal_places=2)
     productBatch_mrp = models.DecimalField(max_digits=10, decimal_places=2)
     productBatch_discount = models.DecimalField(max_digits=10, decimal_places=2)
     productBatch_currentOffers = models.CharField(max_length=100)
-    productBatch_created_by = models.CharField(max_length=100)
+    productBatch_created_by = models.DateTimeField(default=datetime.now)
     productBatch_supplier_ID = models.CharField(max_length=100)
     sku_id = models.CharField(max_length=100)
     productBatch_DateOfManufacture = models.DateField()
@@ -75,7 +75,7 @@ class ProductBatchLedger(models.Model):
     order_id = models.UUIDField()
     order_type = models.CharField(max_length=20, choices=OrderType.choices())  
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
-    order_time = models.IntegerField(default=int(datetime.now().timestamp()))
+    order_time = models.DateTimeField(default=(datetime.now))
 
     def __str__(self):
         return f"{self.product.product_name} - Batch {self.productBatch_id}"

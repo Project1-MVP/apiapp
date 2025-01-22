@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+from datetime import timedelta
 import os
 import dj_database_url
 from pathlib import Path
@@ -46,8 +47,25 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
+    'tenant_management',
     'corsheaders',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
+AUTH_USER_MODEL = 'tenant_management.TenantUser'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -129,11 +147,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 # Replace the SQLite DATABASES configuration with PostgreSQL:
 DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://backend_28y2_user:NRMRo9pe5DvSfbQm0r9BKIuzh9KV4sXL@dpg-cu0haat6l47c73fq970g-a.singapore-postgres.render.com/backend_28y2',
-        conn_max_age=600
-    )
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'stockitdb_t8cj',         # The name of your PostgreSQL database
+        'USER': 'goverdhan',         # Your PostgreSQL username
+        'PASSWORD': 'HtVJpwW3AiIxcQ9cAXTsj7H5reS5Mfe5', # Your PostgreSQL password
+        'HOST': 'dpg-cu7ssqdumphs73a6f61g-a.singapore-postgres.render.com',
+        'PORT': '5432',                 # Default PostgreSQL port is 5432
+    }
 }
 # DATABASES = {
 #     'default': {
