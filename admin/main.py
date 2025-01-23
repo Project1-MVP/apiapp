@@ -4,7 +4,7 @@ from core.middleware.rls import RLSMiddleware
 from admin.routes import admin
 from core.database import engine, Base
 
-app = FastAPI(title="Multi-tenant API")
+app = FastAPI(title="stockit")
 
 app.add_middleware(
     CORSMiddleware,

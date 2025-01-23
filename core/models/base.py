@@ -8,6 +8,7 @@ class Tenant(Base):
     business_name = Column(String, unique=True, index=True)
     phone_number = Column(String)
     email = Column(String)
+    is_complient = Column(Boolean, default=True)
 
 class User(Base):
     __tablename__ = "users"

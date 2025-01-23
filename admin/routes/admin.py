@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from core.database import execute_transaction
+from core.database import execute_transaction, get_db
 from pydantic import BaseModel
 import pyotp
 from passlib.context import CryptContext
