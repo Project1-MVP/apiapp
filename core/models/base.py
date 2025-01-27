@@ -1,24 +1,21 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+import time
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 from core.database import Base
 
-class Tenant(Base):
-    __tablename__ = "tenants"
+class TenantBaseModel(Base):
+    __abstract__ = True
     
-    id = Column(Integer, primary_key=True, index=True)
-    business_name = Column(String, unique=True, index=True)
-    phone_number = Column(String)
-    email = Column(String)
-    is_complient = Column(Boolean, default=True)
-
-class User(Base):
-    __tablename__ = "users"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    created_at = Column(Integer, default=lambda: int(time.time()))
+    updated_at = Column(Integer, default=lambda: int(time.time()), onupdate=lambda: int(time.time()))
     
-    id = Column(Integer, primary_key=True, index=True)
-    tenant_id = Column(Integer, ForeignKey("tenants.id"))
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    totp_secret = Column(String)
-    phone_number = Column(String)
-    email = Column(String)
-    is_active = Column(Boolean, default=True)
-    role = Column(String, default="user")
+    @declared_attr
+    def tenant_id(cls):
+        return Column(UUID(as_uuid=True), ForeignKey("tenants.id"), index=True)
+        
+    @declared_attr 
+    def user_id(cls):
+        return Column(UUID(as_uuid=True), ForeignKey("users.id"))

@@ -3,6 +3,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from jose import JWTError, jwt
 from core.config import settings
 from core.database import execute_transaction
+from sqlalchemy import text
 
 class RLSMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
@@ -14,8 +15,7 @@ class RLSMiddleware(BaseHTTPMiddleware):
                 tenant_id = payload.get("tenant_id")
                 if tenant_id:
                     await execute_transaction(
-                        "SET LOCAL tenant_id = $1",
-                        tenant_id
+                        text(f"SET SESSION app.current_tenant_id = '{tenant_id}'")
                     )
                     response = await call_next(request)
                     return response
